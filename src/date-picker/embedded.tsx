@@ -2,26 +2,36 @@
 // SPDX-License-Identifier: Apache-2.0
 import React from 'react';
 import { DatePickerProps } from './interfaces';
-import Calendar, { DayIndex } from './calendar';
+import Calendar from './calendar';
 import { memoizedDate } from './calendar/utils/date';
-import { CalendarTypes } from './calendar/definitions';
+import { useDatePicker } from './use-date-picker';
 
 export const DatePickerEmbedded = ({
+  value,
+  locale = '',
+  startOfWeek,
   calendarRef,
-  selectedDate,
-  focusedDate,
-  displayedDate,
-  normalizedLocale,
-  normalizedStartOfWeek,
   isDateEnabled,
-  calendarHasFocus,
   nextMonthAriaLabel,
   previousMonthAriaLabel,
   todayAriaLabel,
-  onChangeMonthHandler,
-  onSelectDateHandler,
-  onDateFocusHandler,
 }: DatePickerEmbeddedProps) => {
+  const {
+    normalizedLocale,
+    normalizedStartOfWeek,
+    displayedDate,
+    selectedDate,
+    focusedDate,
+    calendarHasFocus,
+    onChangeMonthHandler,
+    onSelectDateHandler,
+    onDateFocusHandler,
+  } = useDatePicker({
+    locale,
+    startOfWeek,
+    value,
+  });
+
   return (
     <Calendar
       ref={calendarRef}
@@ -42,19 +52,19 @@ export const DatePickerEmbedded = ({
   );
 };
 
-export interface DatePickerEmbeddedProps {
+export type DatePickerEmbeddedProps = Omit<
+  DatePickerProps,
+  | 'placeholder'
+  | 'openCalendarAriaLabel'
+  | 'name'
+  | 'disabled'
+  | 'readOnly'
+  | 'autoFocus'
+  | 'ariaLabel'
+  | 'ariaRequired'
+  | 'onFocus'
+  | 'onBlur'
+  | 'onChange'
+> & {
   calendarRef: React.RefObject<HTMLDivElement>;
-  selectedDate: string | null;
-  focusedDate: string | null;
-  displayedDate: string;
-  normalizedLocale: string;
-  normalizedStartOfWeek: DayIndex;
-  isDateEnabled: DatePickerProps.IsDateEnabledFunction | undefined;
-  calendarHasFocus: boolean;
-  nextMonthAriaLabel: string;
-  previousMonthAriaLabel: string;
-  todayAriaLabel: string;
-  onChangeMonthHandler: (newMonth: Date) => void;
-  onSelectDateHandler: ({ date }: CalendarTypes.DateDetail) => void;
-  onDateFocusHandler: ({ date }: CalendarTypes.DateDetailNullable) => void;
-}
+};
